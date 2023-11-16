@@ -13,7 +13,7 @@
   },
   "server": {
     "port": 3000,
-    "siteUrl": "http://192.168.109.130/",
+    "siteUrl": "http://192.168.109.131/",
     "wopi": {
       "discovery": "hosting/discovery"
     },
@@ -38,7 +38,7 @@
         "algorithmRequest": "HS256",
         "authorizationHeader": "Authorization",
         "authorizationHeaderPrefix": "Bearer ",
-        "secret": "DiJrYaj3PTJgH1rz0ewxQ5j1oJhunq3s",
+        "secret": "2JQQhNwtQutInwpTtY7U6LRLAEea6tQu",
         "expiresIn": "5m"
     },
     "verify_peer_off": true,

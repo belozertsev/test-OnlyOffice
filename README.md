@@ -6,6 +6,17 @@
 4. Change the logo in the editor (take a screenshot).
 5. Create your site with file upload, followed by conversion to PDF by ONLYOFFICE Document Server, and with the ability to download the result.
 
+### **UPDATE** Logo changing via editorConfig (right version)
+To change the logo in the editor, the file "pageviews/config.js" has been edited.
+
+I installed community edition first,
+that's why I couldn't change the logo image </br>
+via config - it was constantly being overwritten with the logo from the document server.
+
+![7.png](https://raw.githubusercontent.com/belozertsev/test-OnlyOffice/main/img/7.png)
+
+![8.png](https://raw.githubusercontent.com/belozertsev/test-OnlyOffice/main/img/8.png)
+
 ### Solution
 1. Document server was installed on a virtual machine running Ubuntu 22.04.3.
 
