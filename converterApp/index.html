@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Test task for OnlyOffice</title>
+
+	<style>
+		*,
+		*::before,
+		*::after {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+
+			font-family: Arial, Helvetica, sans-serif;
+			font-size: 22px;
+
+			--primary-color: #0a250f;
+			--accent-color: #879a89;
+			--secondary-color: #e6eae6;
+			--background-color: #f9f9f7;
+			--basic-light-color: #fff;
+
+			/* border: 1px solid red; */
+		}
+
+		.screen {
+			width: 100%;
+			height: 100vh;
+
+			position: relative;
+
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+
+			background-color: var(--background-color);
+		}
+
+		.header {
+			width: 100%;
+			height: 3rem;
+
+			display: flex;
+			justify-content: center;
+			align-items: center;
+
+			background-color: var(--secondary-color);
+			color: var(--primary-color);
+			font-size: 1.5rem;
+			font-weight: bold;
+		}
+
+		.description p {
+			max-width: 1200px;
+			margin: 1rem;
+			padding: 1rem;
+
+			border: 2px solid var(--accent-color);
+			border-radius: 1rem;
+			color: var(--primary-color);
+		}
+
+		.upload-form {
+			width: 100%;
+			height: 3rem;
+
+			background-color: var(--secondary-color);
+		}
+
+		.custom-file-upload {
+			height: 100%;
+			width: 100%;
+
+			display: flex;
+			justify-content: center;
+			align-items: center;
+
+			cursor: pointer;
+		}
+
+		.document-list {
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 1rem;
+			padding: 1rem;
+		}
+
+		.document-list .document-row {
+			width: 100%;
+			max-width: 1200px;
+			margin: 0 1rem;
+			padding: 1rem;
+
+			display: flex;
+			justify-content: space-between;
+
+			border-radius: 1rem;
+			background-color: var(--accent-color);
+			color: var(--basic-light-color);
+		}
+
+		.document-list .document-row a {
+			max-width: 50%;
+			overflow: hidden;
+		}
+
+		.document-list .document-row span {
+			display: flex;
+			gap: 1rem;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="screen">
+		<header class="header">
+			TestTask
+		</header>
+
+		<div class="description">
+			<p>
+				This app is a <strong>test task</strong>
+				for the position of <strong>full-stack developer</strong> at OnlyOffice company.
+			</p>
+			<p>
+				According to the requirements, it should allow users to <strong>upload</strong> files,
+				<strong>convert</strong> them to PDF format with the ability to <strong>download</strong> the result.
+			</p>
+		</div>
+
+		<form id="upload-form" class="upload-form" enctype="multipart/form-data">
+			<label for="file-upload" class="custom-file-upload">
+				TAP to UPLOAD
+			</label>
+			<input id="file-upload" type="file" name="uploaded_file" style="display: none;" onchange="uploadFile()">
+		</form>
+
+		<section id="document-list" class="document-list">
+			<!-- <div class="document-row"></div> -->
+		</section>
+	</div>
+
+	<script>
+		// const serverUrl= 'http://192.168.109.130:3000'
+        const serverUrl= ''
+
+		async function uploadFile() {
+			const uploadForm = document.getElementById('upload-form')
+			const formData = new FormData(uploadForm)
+
+			try {
+				const response = await fetch(`${serverUrl}/api/uploadDocument`, {
+					method: 'POST',
+					body: formData,
+				})
+				const data = await response.json()
+
+				data.status ? document.location.reload() : console.error(data.error)
+			} catch (error) {
+				console.error('Error when sending request:', error)
+			}
+		}
+
+		async function convertDocument() {
+            let response = await fetch(`${serverUrl}/api/convertDocument/${event.target.key}`)
+			let data = await response.json()
+
+			if (data.status) window.location.href = data.link
+			else console.log(data.error)
+		}
+
+		async function deleteDocument() {
+			let response = await fetch(`${serverUrl}/api/deleteDocument/${event.target.key}`, { method: 'DELETE' })
+			let data = await response.json()
+
+			data.status ? document.location.reload() : console.error(data.error)
+		}
+
+		async function updateDocumentList() {
+			const documentList = document.getElementById('document-list')
+
+			let response = await fetch(`${serverUrl}/api/getDocuments`)
+			let data = await response.json()
+			/*
+				const data = [
+					{ filename: '1234567890_12345678_text.docx', originalname: 'test.docx', extension: 'docx' }
+				]
+			*/
+
+			data.forEach(item => {
+				const divElement = document.createElement('div')
+				documentList.appendChild(divElement)
+
+				divElement.className = 'document-row'
+				divElement.innerHTML = `<a>${item.originalname}</a>`
+
+				const deleteBtn = document.createElement('button')
+				deleteBtn.className = 'delete-button'
+				deleteBtn.textContent = 'DEL'
+				deleteBtn.key = item.filename
+				deleteBtn.onclick = deleteDocument
+
+				const convertBtn = document.createElement('button')
+				convertBtn.className = 'convert-button'
+				convertBtn.textContent = "PDF"
+				convertBtn.key = item.filename
+				convertBtn.onclick = convertDocument
+
+				const buttons = document.createElement('span')
+				buttons.appendChild(convertBtn)
+				buttons.appendChild(deleteBtn)
+
+				divElement.appendChild(buttons)
+			})
+		}
+
+		window.onload = updateDocumentList
+	</script>
+</body>
+
+</html>
