@@ -7,7 +7,7 @@ const fs = require('fs')
 const multer = require('multer')
 const jwt = require('jsonwebtoken')
 const axios = require('axios')
-// const proxy = require('http-proxy-middleware')
+// const proxy = require('http-proxy-middleware') // To solve CORS-problem when using downloading via fetch in client side app
 
 const data = [
     // { filename: '1234567890_12345678_text.docx', originalname: 'test.docx', extension: 'docx' }
